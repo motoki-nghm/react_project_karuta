@@ -68,7 +68,7 @@ function App() {
       <meta name="robots" content="noindex" />
       <meta name="googlebot" content="noindex" />
     </head>
-    <h1 className="title text-3xl lg:text-2xl">
+    <h1 className="title text-3xl lg:text-6xl">
         <span className='inline-block'>はらぺこあおむし</span><span className='sm:pl-2 inline-block'>かるた</span>
     </h1>
       <div className="grid gap-6 justify-center lg:grid-cols-3 mt-10">
