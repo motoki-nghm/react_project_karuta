@@ -1,7 +1,6 @@
 import { useEffect, useState} from 'react';
 import './App.css';
 import karutaData from '../katuta-data.json';
-import SplitText from './SplitText';
 import imgURL from './assets/warm.png';
 
 function App() {
@@ -69,22 +68,20 @@ function App() {
       <meta name="robots" content="noindex" />
       <meta name="googlebot" content="noindex" />
     </head>
-    <h1 className="title">
-    <SplitText>
-        はらぺこあおむし&emsp;かるた
-    </SplitText>
+    <h1 className="title text-3xl lg:text-2xl">
+        <span className='inline-block'>はらぺこあおむし</span><span className='sm:pl-2 inline-block'>かるた</span>
     </h1>
-      <div className="grid gap-6 grid-cols-3 mt-10">
-          <button onClick={handleStart} disabled={playing} className='px-10 py-6 text-gray-700 bg-red-200'>
+      <div className="grid gap-6 justify-center lg:grid-cols-3 mt-10">
+          <button onClick={handleStart} disabled={playing} className='w-fit px-10 py-3 lg:py-6 text-gray-700 bg-red-200'>
             さいしょから
           </button>
-          <button onClick={() => handleStart(10)}disabled={playing}  className='px-10 text-gray-700 bg-red-200'>10まい</button>
-          <button onClick={() => handleStart(20)}disabled={playing}  className='px-10 text-gray-700 bg-red-200'>20まい</button>
+          <button onClick={() => handleStart(10)}disabled={playing}  className='px-10 py-3 lg:py-6  text-gray-700 bg-red-200'>10まい</button>
+          <button onClick={() => handleStart(20)}disabled={playing}  className='px-10 py-3 lg:py-6  text-gray-700 bg-red-200'>20まい</button>
       </div>
-      <button onClick={handleStop} disabled={!playing} className='py-6 px-20 mt-10 text-gray-700 bg-blue-200'>
+      <button onClick={handleStop} disabled={!playing} className='py-3 lg:py-6 px-20 mt-6 lg:mt-10 text-gray-700 bg-blue-200'>
         おわり
       </button>
-      <div className="warm__img">
+      <div className="warm__img w-16 lg:w-28 h-atuo absolute bottom-24">
         <img src={imgURL} alt="" className='warm'/>
       </div>
     </>

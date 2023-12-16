@@ -33,7 +33,7 @@ body {
   min-height: 100vh;
   background-image: url('./assets/bg.png');
   background-repeat: no-repeat;
-  background-size: contain;
+  background-size: cover;
   background-position: center;
 }
 
@@ -61,4 +61,10 @@ button:focus-visible {
 
 .char {
   display: inline-block;
+}
+
+@media (min-width: 1024px) {
+  body {
+    background-size: contain;
+  }
 }

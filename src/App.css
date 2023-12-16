@@ -16,9 +16,6 @@
 }
 
 .warm__img {
-  width: 96px;
-  height: 64px;
-  position: absolute;
   right: 20%;
   animation: warmMoving 40s infinite;
 }
