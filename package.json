@@ -11,8 +11,8 @@
     "preview": "vite preview",
     "rm": "rm -rf docs",
     "mv": "mv build docs",
-    "git": "git add . && git commit && git push origin master",
-    "deploy": "rm -rf docs && npm run build && mv build docs"
+    "git": "git add . && git commit && git push origin react_project_karuta",
+    "deploy": "npm run rm && npm run build && npm run mv && npm run git"
   },
   "dependencies": {
     "@types/react-helmet-async": "^1.0.3",
