@@ -3,38 +3,46 @@ import './App.css';
 import karutaData from '../katuta-data.json';
 import imgURL from './assets/warm.png';
 
+const shuffleData = (array) => {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+};
+
 function App() {
   const [playing, setPlaying] = useState(false);
   const [currentCard, setCurrentCard] = useState(0);
-  const  [num, setNum] = useState(karutaData.length);
+  const [num, setNum] = useState(karutaData.length);
+  const [shuffledData, setShuffledData] = useState([]);
 
-  const shuffleData = ()=>{
-    const array = karutaData.slice();
-    for(let i = array.length - 1; i > 0; i--){
-      const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
-    }
-    return array;
-  }
   useEffect(() => {
-      const fetchData = async () => {
-        if (playing && currentCard < num) {
-          const textToRead = shuffleData()[currentCard].text; // カードのテキストを取得するためにcurrentCardのインデックスを使用
+    let isMounted = true;
+
+    const fetchData = async () => {
+      if (playing && currentCard < num) {
+        const textToRead = shuffledData[currentCard].text;
         // 1回目の読み上げ
         await performAsyncRead(textToRead);
 
         // 2回目の読み上げを1回目の読み上げの後に2秒後にスケジュール
         setTimeout(async () => {
           await performAsyncRead(textToRead);
+          if(isMounted){
           setTimeout(() => {
             setCurrentCard((prevCard) => prevCard + 1); // 次のカードに進む
-          },5000)
-        }, 2000);
-        } else if(playing && currentCard >= num){
-          handleStop();
+          }, 5000);
         }
-      };
-      fetchData();
+        }, 2000);
+      } else if (playing && currentCard >= num) {
+        handleStop();
+      }
+    };
+    fetchData();
+    return ()=>{
+      isMounted = false;
+    }
   }, [playing,currentCard]);
 
   const performAsyncRead = async (text) => {
@@ -53,21 +61,19 @@ function App() {
   const handleStart = (numCards) => {
     setCurrentCard(0);
     setNum(numCards);
+    const newShuffledData = shuffleData([...karutaData]);
+    setShuffledData(newShuffledData);
     setPlaying(true);
   };
 
   const handleStop = () => {
     setCurrentCard(0);
+    setShuffledData([]); // シャッフルされたデータをクリア
     setPlaying(false);
   };
 
   return (
     <>
-    <head>
-      <title>かるた</title>
-      <meta name="robots" content="noindex" />
-      <meta name="googlebot" content="noindex" />
-    </head>
     <h1 className="title text-3xl lg:text-6xl">
         <span className='inline-block'>はらぺこあおむし</span><span className='sm:pl-2 inline-block'>かるた</span>
     </h1>
