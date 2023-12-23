@@ -1,7 +1,7 @@
-import { useEffect, useState} from 'react';
-import './App.css';
-import karutaData from '../katuta-data.json';
-import imgURL from './assets/warm.png';
+import { useEffect, useState } from "react";
+import "./App.css";
+import karutaData from "../katuta-data.json";
+import imgURL from "./assets/warm.png";
 
 const shuffleData = (array) => {
   for (let i = array.length - 1; i > 0; i--) {
@@ -24,26 +24,33 @@ function App() {
       if (playing && currentCard < num) {
         const textToRead = shuffledData[currentCard].text;
         // 1回目の読み上げ
-        await performAsyncRead(textToRead);
-
-        // 2回目の読み上げを1回目の読み上げの後に2秒後にスケジュール
-        setTimeout(async () => {
+        const firstCardTimeoutId = setTimeout(async () => {
           await performAsyncRead(textToRead);
-          if(isMounted){
-          setTimeout(() => {
-            setCurrentCard((prevCard) => prevCard + 1); // 次のカードに進む
-          }, 5000);
-        }
         }, 2000);
+        const timeoutId = setTimeout(async () => {
+          await performAsyncRead(textToRead);
+          if (isMounted) {
+            setCurrentCard((prevCard) => prevCard + 1); // 次のカードに進む
+          }
+        }, 7000);
+        return () => {
+          clearTimeout(timeoutId);
+          clearTimeout(firstCardTimeoutId);
+        };
       } else if (playing && currentCard >= num) {
-        handleStop();
+        const lastCardTimeoutId = setTimeout(() => {
+          handleStop();
+        }, 12000);
+        return () => {
+          clearTimeout(lastCardTimeoutId);
+        };
       }
     };
     fetchData();
-    return ()=>{
+    return () => {
       isMounted = false;
-    }
-  }, [playing,currentCard]);
+    };
+  }, [playing, currentCard, num, shuffledData]);
 
   const performAsyncRead = async (text) => {
     return new Promise((resolve) => {
@@ -74,40 +81,79 @@ function App() {
 
   return (
     <>
-    <h1 className="title text-3xl lg:text-6xl">
-        <span className='inline-block'>はらぺこあおむし</span><span className='sm:pl-2 inline-block'>かるた</span>
-    </h1>
-    {playing?(
-      <>
-      <div className="grid gap-6 justify-center lg:grid-cols-3 mt-10">
-          <button onClick={()=>handleStart(karutaData.length)} disabled={playing} className='w-fit px-10 py-3 lg:py-6 text-gray-700 bg-gray-500 text-gray-200'>
-            さいしょから
+      <h1 className="title text-3xl lg:text-6xl">
+        <span className="inline-block">はらぺこあおむし</span>
+        <span className="sm:pl-2 inline-block">かるた</span>
+      </h1>
+      {playing ? (
+        <>
+          <div className="grid gap-6 justify-center lg:grid-cols-3 mt-10">
+            <button
+              onClick={() => handleStart(karutaData.length)}
+              disabled={playing}
+              className="w-fit px-10 py-3 lg:py-6 text-gray-700 bg-gray-500 text-gray-200"
+            >
+              さいしょから
+            </button>
+            <button
+              onClick={() => handleStart(10)}
+              disabled={playing}
+              className="px-10 py-3 lg:py-6  text-gray-700 bg-gray-500 text-gray-200"
+            >
+              10まい
+            </button>
+            <button
+              onClick={() => handleStart(20)}
+              disabled={playing}
+              className="px-10 py-3 lg:py-6  text-gray-700 bg-gray-500 text-gray-200"
+            >
+              20まい
+            </button>
+          </div>
+          <button
+            onClick={handleStop}
+            disabled={!playing}
+            className="py-3 lg:py-6 px-20 mt-6 lg:mt-10 text-gray-700 bg-red-200"
+          >
+            おわり
           </button>
-          <button onClick={() => handleStart(10)}disabled={playing}  className='px-10 py-3 lg:py-6  text-gray-700 bg-gray-500 text-gray-200'>10まい</button>
-          <button onClick={() => handleStart(20)}disabled={playing}  className='px-10 py-3 lg:py-6  text-gray-700 bg-gray-500 text-gray-200'>20まい</button>
-      </div>
-      <button onClick={handleStop} disabled={!playing} className='py-3 lg:py-6 px-20 mt-6 lg:mt-10 text-gray-700 bg-red-200'>
-        おわり
-      </button>
-      </>
-
-    ):(
-      <>
-      <div className="grid gap-6 justify-center lg:grid-cols-3 mt-10">
-          <button onClick={()=>handleStart(karutaData.length)} disabled={playing} className='w-fit px-10 py-3 lg:py-6 text-gray-700 bg-red-200'>
-            さいしょから
+        </>
+      ) : (
+        <>
+          <div className="grid gap-6 justify-center lg:grid-cols-3 mt-10">
+            <button
+              onClick={() => handleStart(karutaData.length)}
+              disabled={playing}
+              className="w-fit px-10 py-3 lg:py-6 text-gray-700 bg-red-200"
+            >
+              さいしょから
+            </button>
+            <button
+              onClick={() => handleStart(10)}
+              disabled={playing}
+              className="px-10 py-3 lg:py-6  text-gray-700 bg-red-200"
+            >
+              10まい
+            </button>
+            <button
+              onClick={() => handleStart(20)}
+              disabled={playing}
+              className="px-10 py-3 lg:py-6  text-gray-700 bg-red-200"
+            >
+              20まい
+            </button>
+          </div>
+          <button
+            onClick={handleStop}
+            disabled={!playing}
+            className="py-3 lg:py-6 px-20 mt-6 lg:mt-10 text-gray-700 bg-gray-500 text-gray-200"
+          >
+            おわり
           </button>
-          <button onClick={() => handleStart(10)}disabled={playing}  className='px-10 py-3 lg:py-6  text-gray-700 bg-red-200'>10まい</button>
-          <button onClick={() => handleStart(20)}disabled={playing}  className='px-10 py-3 lg:py-6  text-gray-700 bg-red-200'>20まい</button>
-      </div>
-      <button onClick={handleStop} disabled={!playing} className='py-3 lg:py-6 px-20 mt-6 lg:mt-10 text-gray-700 bg-gray-500 text-gray-200'>
-        おわり
-      </button>
-      </>
-
-    )}
+        </>
+      )}
       <div className="warm__img w-16 lg:w-28 h-atuo absolute bottom-24">
-        <img src={imgURL} alt="" className='warm'/>
+        <img src={imgURL} alt="" className="warm" />
       </div>
     </>
   );
